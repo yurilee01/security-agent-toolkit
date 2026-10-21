@@ -1,6 +1,4 @@
-security-agent-toolkit
-├── .env          ← 🔑 API 키 들어 있음
-├── .gitignore    ← 🛡️ .env 업로드 방지
-└── agent_core
-    └── main.py
-    
+.env
+.venv/
+__pycache__/
+desktop.ini

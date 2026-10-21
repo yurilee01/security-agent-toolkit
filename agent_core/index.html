@@ -1,0 +1,3620 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>숲속 작은 빵집</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:"Noto Sans KR",sans-serif;
+    background:#dcebd8;
+    color:#493d35;
+}
+
+button{
+    font-family:inherit;
+    cursor:pointer;
+    border:0;
+}
+
+#game{
+    min-height:100vh;
+}
+
+/* =========================
+   상단
+========================= */
+
+.topbar{
+    min-height:78px;
+    background:#fffaf0;
+    border-bottom:3px solid #d9c8aa;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:12px 28px;
+    position:sticky;
+    top:0;
+    z-index:50;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:900;
+}
+
+.dayInfo{
+    display:flex;
+    gap:7px;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+
+.statBox{
+    background:#fff;
+    border:1px solid #dfd2bd;
+    border-radius:12px;
+    padding:7px 10px;
+    box-shadow:0 2px 5px rgba(0,0,0,.04);
+}
+
+.restartBtn{
+    background:#eee1ce;
+    padding:8px 11px;
+    border-radius:10px;
+    font-weight:800;
+    color:#59473a;
+}
+
+.restartBtn:hover{
+    background:#e5d2b5;
+}
+
+/* =========================
+   메인
+========================= */
+
+.main{
+    max-width:1450px;
+    margin:auto;
+    padding:20px;
+}
+
+.notice{
+    background:#fff9df;
+    border:2px solid #ead79c;
+    border-radius:15px;
+    padding:11px 15px;
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+/* =========================
+   월드
+========================= */
+
+.world{
+    position:relative;
+    height:620px;
+    overflow:hidden;
+    border-radius:24px;
+    border:4px solid #bca887;
+    background:#b7d6a7;
+    box-shadow:0 10px 30px rgba(76,62,40,.15);
+}
+
+.sky{
+    position:absolute;
+    inset:0 0 43% 0;
+    background:linear-gradient(#bfe0f3,#eaf5df);
+}
+
+.sun{
+    position:absolute;
+    right:90px;
+    top:35px;
+    font-size:55px;
+}
+
+.cloud{
+    position:absolute;
+    font-size:48px;
+    opacity:.8;
+}
+
+.cloud.c1{left:80px;top:45px}
+.cloud.c2{left:330px;top:90px;font-size:35px}
+
+.forest{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:210px;
+    height:160px;
+}
+
+.tree{
+    position:absolute;
+    font-size:90px;
+}
+
+.t1{left:25px;bottom:0}
+.t2{left:170px;bottom:-5px;font-size:70px}
+.t3{right:30px;bottom:0}
+.t4{right:180px;bottom:-3px;font-size:75px}
+
+.ground{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:270px;
+    background:#92bc79;
+    border-top:4px solid #789e62;
+}
+
+/* =========================
+   강
+========================= */
+
+.river{
+    position:absolute;
+    right:0;
+    bottom:0;
+    width:220px;
+    height:245px;
+    background:#79b7cf;
+    border-radius:80px 0 0 0;
+    border-left:5px solid rgba(255,255,255,.4);
+}
+
+.river:after{
+    content:"~~~~  ~~~~";
+    position:absolute;
+    top:65px;
+    left:25px;
+    color:#d9f3fa;
+    font-size:23px;
+    transform:rotate(-20deg);
+}
+
+/* =========================
+   빵집
+========================= */
+
+.bakery{
+    position:absolute;
+    left:260px;
+    bottom:105px;
+    width:760px;
+    height:380px;
+    background:#f5d7b0;
+    border:7px solid #9c6e4c;
+    border-radius:20px 20px 8px 8px;
+    box-shadow:0 12px 15px rgba(66,50,30,.2);
+}
+
+.roof{
+    position:absolute;
+    left:-35px;
+    top:-75px;
+    width:820px;
+    height:100px;
+    background:#a86d51;
+    border:7px solid #82503d;
+    clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+
+.sign{
+    position:absolute;
+    top:-50px;
+    left:260px;
+    background:#fff8d9;
+    border:4px solid #8b6749;
+    border-radius:12px;
+    padding:9px 20px;
+    font-weight:900;
+    font-size:19px;
+    z-index:5;
+}
+
+.interior{
+    position:absolute;
+    left:18px;
+    right:18px;
+    top:18px;
+    bottom:18px;
+    background:#fff0d6;
+    border:5px solid #b68459;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.floor{
+    position:absolute;
+    inset:45% 0 0 0;
+    background:
+    repeating-linear-gradient(
+        90deg,
+        #e9c99e 0,
+        #e9c99e 58px,
+        #ddb988 59px,
+        #ddb988 62px
+    );
+}
+
+.wall{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    height:45%;
+    background:#fff3df;
+}
+
+.door{
+    position:absolute;
+    bottom:0;
+    left:315px;
+    width:100px;
+    height:175px;
+    background:#9b6747;
+    border:6px solid #704b37;
+    border-bottom:0;
+    border-radius:50px 50px 0 0;
+    transform-origin:left;
+    z-index:20;
+    transition:.5s;
+}
+
+.door.open{
+    transform:rotateY(-75deg);
+}
+
+.doorBell{
+    position:absolute;
+    top:10px;
+    right:-15px;
+    font-size:24px;
+}
+
+.doorMat{
+    position:absolute;
+    bottom:0;
+    left:300px;
+    width:130px;
+    height:20px;
+    background:#765842;
+    border-radius:50%;
+    z-index:4;
+}
+
+/* =========================
+   작업 공간
+========================= */
+
+.zone{
+    position:absolute;
+    background:rgba(255,255,255,.58);
+    border:3px solid #b98b62;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-size:13px;
+    z-index:8;
+    text-align:center;
+}
+
+.workzone{
+    left:25px;
+    bottom:40px;
+    width:180px;
+    height:120px;
+}
+
+.ovenzone{
+    right:30px;
+    bottom:45px;
+    width:150px;
+    height:130px;
+}
+
+.displayzone{
+    left:215px;
+    top:40px;
+    width:160px;
+    height:85px;
+}
+
+.teazone{
+    right:200px;
+    top:40px;
+    width:140px;
+    height:85px;
+}
+
+.shelf{
+    position:absolute;
+    left:30px;
+    top:25px;
+    font-size:45px;
+    z-index:9;
+}
+
+.foxStaff{
+    position:absolute;
+    right:78px;
+    bottom:95px;
+    font-size:76px;
+    z-index:15;
+    transition:.3s;
+}
+
+.foxStaff.talking{
+    animation:bounce .5s infinite alternate;
+}
+
+@keyframes bounce{
+    from{transform:translateY(0)}
+    to{transform:translateY(-8px)}
+}
+
+.player{
+    position:absolute;
+    left:410px;
+    bottom:95px;
+    font-size:82px;
+    z-index:14;
+}
+
+.customer{
+    position:absolute;
+    left:-120px;
+    bottom:115px;
+    font-size:76px;
+    z-index:25;
+    transition:left 1.4s ease;
+}
+
+.customer.walkIn{
+    left:360px;
+}
+
+.customer.atCounter{
+    left:510px;
+}
+
+.customerBubble{
+    position:absolute;
+    left:495px;
+    bottom:230px;
+    width:230px;
+    min-height:75px;
+    background:#fff;
+    border:3px solid #a8866a;
+    border-radius:18px;
+    padding:12px;
+    z-index:30;
+    display:none;
+    box-shadow:0 5px 12px rgba(0,0,0,.1);
+}
+
+.customerBubble.show{
+    display:block;
+}
+
+/* =========================
+   농장
+========================= */
+
+.farm{
+    position:absolute;
+    left:35px;
+    bottom:20px;
+    width:210px;
+    height:170px;
+    background:#c79c69;
+    border:5px solid #8b6748;
+    border-radius:20px;
+    z-index:6;
+    padding:10px;
+}
+
+.farmTitle{
+    font-weight:900;
+    margin-bottom:5px;
+}
+
+.cropGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+}
+
+.crop{
+    height:42px;
+    background:#8eb66e;
+    border:2px solid #6f9555;
+    border-radius:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.crop.ready{
+    background:#ffe8a7;
+    animation:pulse 1s infinite alternate;
+}
+
+@keyframes pulse{
+    from{transform:scale(1)}
+    to{transform:scale(1.05)}
+}
+
+.bearFarmer{
+    position:absolute;
+    left:180px;
+    bottom:25px;
+    font-size:72px;
+    z-index:10;
+}
+
+/* =========================
+   비
+========================= */
+
+.rain{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:40;
+    display:none;
+    background-image:
+    repeating-linear-gradient(
+        105deg,
+        transparent 0,
+        transparent 18px,
+        rgba(255,255,255,.5) 19px,
+        rgba(255,255,255,.5) 21px,
+        transparent 22px,
+        transparent 35px
+    );
+    animation:rainMove .35s linear infinite;
+}
+
+.rain.active{
+    display:block;
+}
+
+@keyframes rainMove{
+    from{background-position:0 0}
+    to{background-position:-20px 40px}
+}
+
+/* =========================
+   밤
+========================= */
+
+.nightOverlay{
+    position:absolute;
+    inset:0;
+    background:rgba(30,35,60,.72);
+    z-index:45;
+    display:none;
+    pointer-events:none;
+}
+
+.nightOverlay.active{
+    display:block;
+}
+
+.moon{
+    position:absolute;
+    top:35px;
+    right:80px;
+    font-size:60px;
+}
+
+.firefly{
+    position:absolute;
+    font-size:18px;
+    animation:fly 2s infinite alternate;
+}
+
+@keyframes fly{
+    from{transform:translateY(0);opacity:.5}
+    to{transform:translateY(-20px);opacity:1}
+}
+
+/* =========================
+   패널
+========================= */
+
+.panelGrid{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:15px;
+    margin-top:15px;
+}
+
+.panel{
+    background:#fffaf2;
+    border:2px solid #dac9af;
+    border-radius:18px;
+    padding:16px;
+    box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
+
+.panel h3{
+    margin:0 0 12px;
+}
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.btn{
+    padding:10px 14px;
+    border-radius:11px;
+    background:#ead8bc;
+    color:#503e30;
+    font-weight:800;
+}
+
+.btn.mainBtn{
+    background:#d99672;
+    color:white;
+}
+
+.btn.green{
+    background:#9dbb78;
+    color:white;
+}
+
+.btn.blue{
+    background:#85abc1;
+    color:white;
+}
+
+.btn.red{
+    background:#c77972;
+    color:white;
+}
+
+.btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+.inventory{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.item{
+    background:white;
+    border:1px solid #ddd0ba;
+    border-radius:10px;
+    padding:7px 10px;
+}
+
+.log{
+    height:120px;
+    overflow:auto;
+    background:#f8f0e3;
+    border-radius:12px;
+    padding:10px;
+    font-size:13px;
+    line-height:1.7;
+}
+
+/* =========================
+   모달
+========================= */
+
+.modalBack{
+    position:fixed;
+    inset:0;
+    background:rgba(35,30,25,.55);
+    z-index:100;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modalBack.show{
+    display:flex;
+}
+
+.modal{
+    width:min(650px,95vw);
+    max-height:90vh;
+    overflow:auto;
+    background:#fffaf1;
+    border:4px solid #c7a980;
+    border-radius:22px;
+    padding:22px;
+    box-shadow:0 15px 40px rgba(0,0,0,.25);
+}
+
+.modal h2{
+    margin-top:0;
+}
+
+.modalActions{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+    margin-top:18px;
+}
+
+/* =========================
+   미니게임
+========================= */
+
+.miniGame{
+    margin-top:15px;
+    background:#f4e6d0;
+    border:2px solid #d2b88e;
+    border-radius:15px;
+    padding:15px;
+}
+
+.doughArea{
+    height:150px;
+    position:relative;
+    background:#f7eddc;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.dough{
+    position:absolute;
+    width:120px;
+    height:70px;
+    border-radius:50%;
+    background:#dfae71;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+.rollingPin{
+    position:absolute;
+    font-size:45px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    cursor:grab;
+}
+
+.progress{
+    height:16px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.progressBar{
+    height:100%;
+    width:0;
+    background:#8eb673;
+    transition:.1s;
+}
+
+.ovenBar{
+    position:relative;
+    height:35px;
+    background:#d5d5d5;
+    border-radius:20px;
+    overflow:hidden;
+    margin:15px 0;
+}
+
+.ovenPerfect{
+    position:absolute;
+    left:40%;
+    width:20%;
+    top:0;
+    bottom:0;
+    background:#91bd77;
+}
+
+.ovenNeedle{
+    position:absolute;
+    width:4px;
+    top:0;
+    bottom:0;
+    left:0;
+    background:#6a4d3b;
+}
+
+/* =========================
+   장식
+========================= */
+
+.decorArea{
+    min-height:160px;
+    background:#fff;
+    border-radius:12px;
+    border:2px dashed #cdbb9e;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+}
+
+.decorItem{
+    position:absolute;
+    font-size:34px;
+    cursor:grab;
+}
+
+/* =========================
+   가구
+========================= */
+
+.slotGrid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+    margin-top:12px;
+}
+
+.slot{
+    height:65px;
+    border:2px dashed #a5bb8d;
+    background:#edf6e6;
+    border-radius:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    cursor:pointer;
+}
+
+.slot.occupied{
+    background:#f2d8cb;
+    border-color:#c58673;
+    cursor:not-allowed;
+}
+
+hr{
+    border:0;
+    border-top:1px solid #ddcfbb;
+    margin:18px 0;
+}
+
+@media(max-width:900px){
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .dayInfo{
+        width:100%;
+        justify-content:flex-start;
+    }
+
+    .panelGrid{
+        grid-template-columns:1fr;
+    }
+
+    .bakery{
+        left:190px;
+        transform:scale(.85);
+        transform-origin:bottom left;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<header class="topbar">
+
+    <div class="logo">
+        🥐 숲속 작은 빵집
+    </div>
+
+    <div class="dayInfo">
+
+        <button
+            class="restartBtn"
+            onclick="restartGame()">
+            🔄 새로 시작
+        </button>
+
+        <div class="statBox">
+            📅 <span id="dayText">1일차</span>
+        </div>
+
+        <div class="statBox">
+            🌤️ <span id="weatherText">맑음</span>
+        </div>
+
+        <div class="statBox">
+            💰 <span id="moneyText">1500</span>G
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="main">
+
+<div class="notice" id="notice">
+    🌅 아침이에요!
+</div>
+
+
+<section class="world">
+
+    <div class="sky">
+
+        <div class="sun">☀️</div>
+
+        <div class="cloud c1">☁️</div>
+        <div class="cloud c2">☁️</div>
+
+    </div>
+
+
+    <div class="forest">
+
+        <div class="tree t1">🌳</div>
+        <div class="tree t2">🌲</div>
+        <div class="tree t3">🌳</div>
+        <div class="tree t4">🌲</div>
+
+    </div>
+
+
+    <div class="ground"></div>
+
+    <div class="river"></div>
+
+
+    <!-- 빵집 -->
+
+    <div class="bakery">
+
+        <div class="roof"></div>
+
+        <div class="sign">
+            🥐 숲속 작은 빵집
+        </div>
+
+
+        <div class="interior">
+
+            <div class="wall"></div>
+            <div class="floor"></div>
+
+            <div class="shelf">
+                🪵🥖
+            </div>
+
+
+            <div class="zone workzone">
+                <b>🥣 작업대</b>
+                <span>반죽을 만드는 곳</span>
+            </div>
+
+
+            <div class="zone ovenzone">
+                <b>🔥 오븐</b>
+                <span>맛있게 구워요</span>
+            </div>
+
+
+            <div class="zone displayzone">
+                <b>🧁 진열대</b>
+                <span id="breadDisplay">
+                    완성 빵 0개
+                </span>
+            </div>
+
+
+            <div class="zone teazone">
+                <b>🫖 차 테이블</b>
+                <span>손님들의 휴식 공간</span>
+            </div>
+
+
+            <div class="door" id="door">
+                <span class="doorBell">🔔</span>
+            </div>
+
+
+            <div class="doorMat"></div>
+
+
+            <div class="player">
+                🐰
+            </div>
+
+
+            <div class="foxStaff" id="foxStaff">
+                🦊
+            </div>
+
+
+            <div
+                class="customer"
+                id="customer">
+            </div>
+
+
+            <div
+                class="customerBubble"
+                id="customerBubble">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 농장 -->
+
+    <div class="farm">
+
+        <div class="farmTitle">
+            🌾 작은 농장
+        </div>
+
+        <div
+            class="cropGrid"
+            id="cropGrid">
+        </div>
+
+    </div>
+
+
+    <div class="bearFarmer">
+        🐻
+    </div>
+
+
+    <div
+        class="rain"
+        id="rain">
+    </div>
+
+
+    <div
+        class="nightOverlay"
+        id="nightOverlay">
+
+        <div class="moon">
+            🌙
+        </div>
+
+        <span
+            class="firefly"
+            style="left:15%;top:45%">
+            ✨
+        </span>
+
+        <span
+            class="firefly"
+            style="left:35%;top:65%">
+            ✨
+        </span>
+
+        <span
+            class="firefly"
+            style="left:55%;top:48%">
+            ✨
+        </span>
+
+        <span
+            class="firefly"
+            style="left:75%;top:70%">
+            ✨
+        </span>
+
+        <span
+            class="firefly"
+            style="left:88%;top:50%">
+            ✨
+        </span>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     오늘의 빵집
+========================= -->
+
+<div class="panelGrid">
+
+<section class="panel">
+
+    <h3>🥐 오늘의 빵집</h3>
+
+    <div id="customerInfo">
+        아직 손님이 오지 않았어요.
+    </div>
+
+    <br>
+
+    <div class="buttons">
+
+        <button
+            class="btn mainBtn"
+            id="openShopBtn">
+            🚪 영업 시작
+        </button>
+
+
+        <button
+            class="btn green"
+            id="closeShopBtn"
+            disabled>
+            🌙 영업 종료
+        </button>
+
+
+        <button
+            class="btn blue"
+            id="nextDayBtn"
+            disabled>
+            ☀️ 다음 날
+        </button>
+
+
+        <button
+            class="btn"
+            id="furnitureBtn">
+            🛋️ 가구 상점
+        </button>
+
+
+        <button
+            class="btn"
+            id="shareBtn">
+            🥖 따뜻한 빵 나눔
+        </button>
+
+    </div>
+
+</section>
+
+
+<section class="panel">
+
+    <h3>📊 빵집 상태</h3>
+
+    <div
+        class="inventory"
+        id="stats">
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- =========================
+     재고 / 기록
+========================= -->
+
+<div class="panelGrid">
+
+<section class="panel">
+
+    <h3>🎒 재고</h3>
+
+    <div
+        class="inventory"
+        id="inventory">
+    </div>
+
+</section>
+
+
+<section class="panel">
+
+    <h3>📜 오늘의 기록</h3>
+
+    <div
+        class="log"
+        id="log">
+    </div>
+
+</section>
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- =========================
+     미니게임
+========================= -->
+
+<div
+    class="modalBack"
+    id="miniModal">
+
+    <div
+        class="modal"
+        id="miniContent">
+    </div>
+
+</div>
+
+
+<!-- =========================
+     가구 상점
+========================= -->
+
+<div
+    class="modalBack"
+    id="furnitureModal">
+
+    <div class="modal">
+
+        <h2>🛋️ 숲속 가구 상점</h2>
+
+        <p>
+            새로운 날이 되면 판매하는 가구가 바뀝니다.
+        </p>
+
+        <div id="furnitureList"></div>
+
+        <hr>
+
+        <h3>🏠 가게에 배치하기</h3>
+
+        <p>
+            초록색 칸을 눌러 가구를 배치하세요.
+        </p>
+
+        <div
+            class="slotGrid"
+            id="slotGrid">
+        </div>
+
+        <div class="modalActions">
+
+            <button
+                class="btn"
+                onclick="closeModal('furnitureModal')">
+                닫기
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     하루 정산
+========================= -->
+
+<div
+    class="modalBack"
+    id="settlementModal">
+
+    <div class="modal">
+
+        <h2>🌙 오늘의 영업 정산</h2>
+
+        <div id="settlementContent"></div>
+
+        <div class="modalActions">
+
+            <button
+                class="btn blue"
+                onclick="prepareNextDay()">
+                ☀️ 다음 날 시작
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   동물 데이터
+===================================================== */
+
+const animals = [
+
+{
+    id:"rabbit",
+    name:"토끼",
+    emoji:"🐰",
+    weather:["맑음","구름 조금"],
+    order:"딸기 크림빵",
+    price:180
+},
+
+{
+    id:"squirrel",
+    name:"다람쥐",
+    emoji:"🐿️",
+    weather:["구름 조금","흐림"],
+    order:"견과류빵",
+    price:210
+},
+
+{
+    id:"fox",
+    name:"여우",
+    emoji:"🦊",
+    weather:["맑음"],
+    order:"초콜릿 크루아상",
+    price:280
+},
+
+{
+    id:"bear",
+    name:"곰",
+    emoji:"🐻",
+    weather:["비"],
+    order:"꿀빵",
+    price:240
+},
+
+{
+    id:"deer",
+    name:"사슴",
+    emoji:"🦌",
+    weather:["맑음"],
+    order:"꽃잎 마들렌",
+    price:230
+},
+
+{
+    id:"cat",
+    name:"고양이",
+    emoji:"🐱",
+    weather:["맑음","구름 조금"],
+    order:"우유빵",
+    price:190
+},
+
+{
+    id:"dog",
+    name:"강아지",
+    emoji:"🐶",
+    weather:["맑음"],
+    order:"버터롤",
+    price:170
+},
+
+{
+    id:"hedgehog",
+    name:"고슴도치",
+    emoji:"🦔",
+    weather:["흐림"],
+    order:"사과파이",
+    price:260
+},
+
+{
+    id:"frog",
+    name:"개구리",
+    emoji:"🐸",
+    weather:["비"],
+    order:"말차빵",
+    price:220
+},
+
+{
+    id:"snail",
+    name:"달팽이",
+    emoji:"🐌",
+    weather:["비"],
+    order:"촉촉한 빵",
+    price:160
+},
+
+{
+    id:"butterfly",
+    name:"나비",
+    emoji:"🦋",
+    weather:["맑음"],
+    order:"꽃잼 쿠키",
+    price:200
+},
+
+{
+    id:"bee",
+    name:"벌",
+    emoji:"🐝",
+    weather:["맑음"],
+    order:"꿀 브리오슈",
+    price:250
+},
+
+{
+    id:"owl",
+    name:"부엉이",
+    emoji:"🦉",
+    weather:["안개"],
+    order:"밤꿀 밤케이크",
+    price:350
+},
+
+{
+    id:"lizard",
+    name:"도마뱀",
+    emoji:"🦎",
+    weather:["맑음"],
+    order:"레몬 마들렌",
+    price:190
+},
+
+{
+    id:"turtle",
+    name:"거북이",
+    emoji:"🐢",
+    weather:["비","흐림"],
+    order:"땅콩 쿠키",
+    price:210
+}
+
+];
+
+
+/* =====================================================
+   기본 게임 상태
+===================================================== */
+
+function createNewGame(){
+
+    return {
+
+        day:1,
+
+        money:1500,
+
+        weather:"맑음",
+
+        phase:"morning",
+
+        shopOpen:false,
+
+        customersToday:0,
+
+        maxCustomers:5,
+
+        currentCustomer:null,
+
+        currentOrder:null,
+
+        finishedBread:0,
+
+        revenueToday:0,
+
+        expenseToday:0,
+
+        flour:8,
+
+        milk:3,
+
+        strawberry:3,
+
+        apple:2,
+
+        honey:2,
+
+        nuts:3,
+
+        breadShared:0,
+
+        fame:0,
+
+        kindness:0,
+
+        warmth:0,
+
+        trust:0,
+
+        shopLevel:1,
+
+        employeeFox:true,
+
+        employeeBear:true,
+
+        regulars:{},
+
+        furniture:[],
+
+        ownedFurniture:[],
+
+        furnitureShop:[],
+
+        crops:[
+
+            {type:"strawberry",ready:true},
+            {type:"wheat",ready:true},
+            {type:"apple",ready:false},
+            {type:"strawberry",ready:false},
+            {type:"wheat",ready:false},
+            {type:"flower",ready:false}
+
+        ]
+
+    };
+
+}
+
+
+/* =====================================================
+   저장 / 불러오기
+===================================================== */
+
+const SAVE_KEY = "forestBakerySave_v1";
+
+
+function saveGame(){
+
+    try{
+
+        localStorage.setItem(
+            SAVE_KEY,
+            JSON.stringify(game)
+        );
+
+    }catch(error){
+
+        console.log("저장 실패",error);
+
+    }
+
+}
+
+
+function loadGame(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(SAVE_KEY);
+
+        if(!saved){
+
+            return createNewGame();
+
+        }
+
+        const parsed =
+            JSON.parse(saved);
+
+        return {
+            ...createNewGame(),
+            ...parsed
+        };
+
+    }catch(error){
+
+        console.log("불러오기 실패",error);
+
+        return createNewGame();
+
+    }
+
+}
+
+
+let game = loadGame();
+
+
+/* =====================================================
+   날씨
+===================================================== */
+
+const weatherList = [
+
+    {
+        name:"맑음",
+        emoji:"☀️"
+    },
+
+    {
+        name:"구름 조금",
+        emoji:"🌤️"
+    },
+
+    {
+        name:"흐림",
+        emoji:"☁️"
+    },
+
+    {
+        name:"비",
+        emoji:"🌧️"
+    },
+
+    {
+        name:"안개",
+        emoji:"🌫️"
+    }
+
+];
+
+
+function randomWeather(){
+
+    const w =
+        weatherList[
+            Math.floor(
+                Math.random()*weatherList.length
+            )
+        ];
+
+    game.weather=w.name;
+
+    document.getElementById("weatherText")
+        .textContent=
+        w.emoji+" "+w.name;
+
+    document.getElementById("rain")
+        .classList.toggle(
+            "active",
+            w.name==="비"
+        );
+
+    addLog(
+        `${w.emoji} 오늘의 날씨는 <b>${w.name}</b>이에요.`
+    );
+
+    saveGame();
+
+}
+
+
+/* =====================================================
+   UI
+===================================================== */
+
+function updateUI(){
+
+    document.getElementById("dayText")
+        .textContent=
+        game.day+"일차";
+
+    document.getElementById("moneyText")
+        .textContent=
+        game.money;
+
+    document.getElementById("breadDisplay")
+        .textContent=
+        `완성 빵 ${game.finishedBread}개`;
+
+
+    document.getElementById("stats")
+        .innerHTML=`
+
+        <div class="item">
+            💰 ${game.money}G
+        </div>
+
+        <div class="item">
+            ⭐ 명성 ${game.fame}
+        </div>
+
+        <div class="item">
+            🫶 친절 ${game.kindness}
+        </div>
+
+        <div class="item">
+            💗 따뜻함 ${game.warmth}
+        </div>
+
+        <div class="item">
+            🌿 신뢰 ${game.trust}
+        </div>
+
+        <div class="item">
+            🏠 Lv.${game.shopLevel}
+        </div>
+
+        `;
+
+
+    document.getElementById("inventory")
+        .innerHTML=`
+
+        <div class="item">
+            🌾 밀가루 ${game.flour}
+        </div>
+
+        <div class="item">
+            🥛 우유 ${game.milk}
+        </div>
+
+        <div class="item">
+            🍓 딸기 ${game.strawberry}
+        </div>
+
+        <div class="item">
+            🍎 사과 ${game.apple}
+        </div>
+
+        <div class="item">
+            🍯 꿀 ${game.honey}
+        </div>
+
+        <div class="item">
+            🌰 견과류 ${game.nuts}
+        </div>
+
+        <div class="item">
+            🥐 완성빵 ${game.finishedBread}
+        </div>
+
+        `;
+
+    renderCrops();
+
+    saveGame();
+
+}
+
+
+/* =====================================================
+   로그
+===================================================== */
+
+function addLog(text){
+
+    const log =
+        document.getElementById("log");
+
+    const line =
+        document.createElement("div");
+
+    line.innerHTML=
+        "• "+text;
+
+    log.prepend(line);
+
+}
+
+
+/* =====================================================
+   아침
+===================================================== */
+
+function morning(){
+
+    game.phase="morning";
+
+    game.shopOpen=false;
+
+    game.customersToday=0;
+
+    game.revenueToday=0;
+
+    game.expenseToday=0;
+
+    game.currentCustomer=null;
+
+    game.currentOrder=null;
+
+
+    randomWeather();
+
+
+    document.getElementById("customer")
+        .className="customer";
+
+    document.getElementById("customerBubble")
+        .classList.remove("show");
+
+    document.getElementById("door")
+        .classList.remove("open");
+
+
+    document.getElementById("openShopBtn")
+        .disabled=false;
+
+    document.getElementById("closeShopBtn")
+        .disabled=true;
+
+    document.getElementById("nextDayBtn")
+        .disabled=true;
+
+
+    document.getElementById("notice")
+        .innerHTML=
+        "🌅 아침이에요! 오늘도 숲속 친구들을 기다려볼까요?";
+
+
+    milkDelivery();
+
+    growCrops();
+
+    refreshFurnitureShop();
+
+    updateUI();
+
+    saveGame();
+
+}
+
+
+/* =====================================================
+   우유
+===================================================== */
+
+function milkDelivery(){
+
+    const amount =
+        Math.floor(Math.random()*3)+1;
+
+    game.milk+=amount;
+
+    addLog(
+        `🥛 신선한 우유 ${amount}개가 배달되었어요!`
+    );
+
+    document.getElementById("notice")
+        .innerHTML=
+        `🥛 오늘 아침 신선한 우유 ${amount}개가 도착했어요!`;
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   농장
+===================================================== */
+
+function growCrops(){
+
+    game.crops.forEach(crop=>{
+
+        if(!crop.ready){
+
+            if(Math.random()<.55){
+
+                crop.ready=true;
+
+            }
+
+        }
+
+    });
+
+}
+
+
+function renderCrops(){
+
+    const grid =
+        document.getElementById("cropGrid");
+
+    grid.innerHTML="";
+
+
+    game.crops.forEach(
+        (crop,index)=>{
+
+            const div =
+                document.createElement("div");
+
+            div.className=
+                "crop "+
+                (crop.ready?"ready":"");
+
+            let emoji="🌱";
+
+            if(crop.type==="strawberry")
+                emoji="🍓";
+
+            if(crop.type==="wheat")
+                emoji="🌾";
+
+            if(crop.type==="apple")
+                emoji="🍎";
+
+            if(crop.type==="flower")
+                emoji="🌷";
+
+            div.textContent=emoji;
+
+            div.onclick=()=>{
+                harvestCrop(index);
+            };
+
+            grid.appendChild(div);
+
+        }
+    );
+
+}
+
+
+function harvestCrop(index){
+
+    const crop =
+        game.crops[index];
+
+    if(!crop.ready){
+
+        addLog(
+            "🌱 아직 자라고 있는 중이에요."
+        );
+
+        return;
+
+    }
+
+
+    crop.ready=false;
+
+
+    if(crop.type==="strawberry"){
+
+        game.strawberry++;
+
+        addLog(
+            "🍓 딸기를 수확했어요!"
+        );
+
+    }
+
+
+    if(crop.type==="wheat"){
+
+        game.flour++;
+
+        addLog(
+            "🌾 밀을 수확해서 밀가루를 얻었어요!"
+        );
+
+    }
+
+
+    if(crop.type==="apple"){
+
+        game.apple++;
+
+        addLog(
+            "🍎 사과를 수확했어요!"
+        );
+
+    }
+
+
+    if(crop.type==="flower"){
+
+        game.kindness++;
+
+        addLog(
+            "🌷 예쁜 꽃을 수확했어요. 친절함 +1"
+        );
+
+    }
+
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   영업 시작
+===================================================== */
+
+document.getElementById("openShopBtn")
+.addEventListener(
+    "click",
+    openShop
+);
+
+
+function openShop(){
+
+    if(game.shopOpen)
+        return;
+
+
+    game.shopOpen=true;
+
+    game.phase="open";
+
+
+    document.getElementById("openShopBtn")
+        .disabled=true;
+
+    document.getElementById("closeShopBtn")
+        .disabled=false;
+
+
+    document.getElementById("notice")
+        .innerHTML=
+        "🥐 영업 시작! 손님을 기다려볼까요?";
+
+
+    addLog(
+        "🚪 빵집 문을 열었습니다."
+    );
+
+
+    saveGame();
+
+
+    setTimeout(
+        nextCustomer,
+        800
+    );
+
+}
+
+
+/* =====================================================
+   손님
+===================================================== */
+
+function chooseCustomer(){
+
+    const possible =
+        animals.filter(
+            a =>
+            a.weather.includes(game.weather)
+        );
+
+
+    const pool =
+        possible.length
+        ? possible
+        : animals;
+
+
+    return pool[
+        Math.floor(
+            Math.random()*pool.length
+        )
+    ];
+
+}
+
+
+function nextCustomer(){
+
+    if(!game.shopOpen)
+        return;
+
+
+    if(
+        game.customersToday
+        >=game.maxCustomers
+    ){
+
+        document.getElementById("notice")
+            .innerHTML=
+            "☕ 오늘 찾아온 손님들을 모두 맞이했어요.";
+
+        return;
+
+    }
+
+
+    game.customersToday++;
+
+
+    const animal =
+        chooseCustomer();
+
+
+    game.currentCustomer=animal;
+
+    game.currentOrder=animal.order;
+
+
+    const customer =
+        document.getElementById("customer");
+
+
+    customer.textContent=
+        animal.emoji;
+
+    customer.className=
+        "customer walkIn";
+
+
+    document.getElementById("door")
+        .classList.add("open");
+
+
+    document.getElementById("foxStaff")
+        .classList.add("talking");
+
+
+    addLog(
+        `${animal.emoji} ${animal.name} 손님이 문을 열고 들어왔어요.`
+    );
+
+
+    document.getElementById("customerInfo")
+        .innerHTML=`
+
+        <b>
+            ${animal.emoji}
+            ${animal.name} 손님
+        </b>
+
+        <br>
+
+        주문:
+        <strong>${animal.order}</strong>
+
+        <br>
+
+        예상 판매가:
+        ${animal.price}G
+
+        `;
+
+
+    setTimeout(()=>{
+
+        customer.className=
+            "customer atCounter";
+
+
+        document.getElementById("customerBubble")
+            .innerHTML=
+            `💬 "${animal.order} 하나 부탁드려요!"`;
+
+
+        document.getElementById("customerBubble")
+            .classList.add("show");
+
+
+        document.getElementById("foxStaff")
+            .classList.remove("talking");
+
+
+        setTimeout(
+            startBaking,
+            700
+        );
+
+    },1500);
+
+}
+
+
+/* =====================================================
+   베이킹
+===================================================== */
+
+function startBaking(){
+
+    const animal =
+        game.currentCustomer;
+
+
+    document.getElementById("miniModal")
+        .classList.add("show");
+
+
+    document.getElementById("miniContent")
+        .innerHTML=`
+
+        <h2>
+            🥐 ${animal.order} 만들기
+        </h2>
+
+        <p>
+            ${animal.emoji}
+            ${animal.name} 손님이 기다리고 있어요.<br>
+            천천히 정성껏 만들어주세요!
+        </p>
+
+        <div class="miniGame">
+
+            <h3>1️⃣ 반죽하기</h3>
+
+            <p>
+                반죽을 마우스로 문질러주세요.
+            </p>
+
+            <div
+                class="doughArea"
+                id="mixArea">
+
+                <div class="dough"></div>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progressBar"
+                    id="mixBar">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modalActions">
+
+            <button
+                class="btn red"
+                onclick="cancelBaking()">
+
+                취소
+
+            </button>
+
+        </div>
+
+        `;
+
+
+    let progress=0;
+
+    let lastX=null;
+
+    let lastY=null;
+
+
+    const area =
+        document.getElementById("mixArea");
+
+
+    area.addEventListener(
+        "mousemove",
+        e=>{
+
+            if(e.buttons!==1)
+                return;
+
+
+            if(lastX!==null){
+
+                const distance =
+                    Math.abs(
+                        e.clientX-lastX
+                    )
+                    +
+                    Math.abs(
+                        e.clientY-lastY
+                    );
+
+
+                progress +=
+                    Math.min(
+                        distance/5,
+                        2
+                    );
+
+            }
+
+
+            lastX=e.clientX;
+
+            lastY=e.clientY;
+
+
+            progress=
+                Math.min(
+                    progress,
+                    100
+                );
+
+
+            document.getElementById("mixBar")
+                .style.width=
+                progress+"%";
+
+
+            if(progress>=100){
+
+                finishMixing();
+
+            }
+
+        }
+    );
+
+}
+
+
+function finishMixing(){
+
+    if(game.flour<=0){
+
+        alert(
+            "🌾 밀가루가 부족해요!"
+        );
+
+        cancelBaking();
+
+        return;
+
+    }
+
+
+    if(game.milk<=0){
+
+        alert(
+            "🥛 우유가 부족해요!"
+        );
+
+        cancelBaking();
+
+        return;
+
+    }
+
+
+    game.flour--;
+
+    game.milk--;
+
+    updateUI();
+
+
+    document.getElementById("miniContent")
+        .innerHTML=`
+
+        <h2>🪵 2️⃣ 반죽 밀기</h2>
+
+        <p>
+            롤링핀을 좌우로 움직여
+            반죽을 고르게 펴주세요!
+        </p>
+
+        <div class="miniGame">
+
+            <div
+                class="doughArea"
+                id="rollArea">
+
+                <div
+                    class="dough"
+                    id="rollDough">
+                </div>
+
+                <div
+                    class="rollingPin"
+                    id="rollingPin">
+                    🪵
+                </div>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="progressBar"
+                    id="rollBar">
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+
+    let progress=0;
+
+    let lastX=null;
+
+
+    const pin =
+        document.getElementById("rollingPin");
+
+    const area =
+        document.getElementById("rollArea");
+
+
+    area.addEventListener(
+        "mousemove",
+        e=>{
+
+            if(e.buttons!==1)
+                return;
+
+
+            if(lastX!==null){
+
+                progress +=
+                    Math.min(
+                        Math.abs(
+                            e.clientX-lastX
+                        )/5,
+                        3
+                    );
+
+            }
+
+
+            lastX=e.clientX;
+
+
+            progress=
+                Math.min(
+                    progress,
+                    100
+                );
+
+
+            document.getElementById("rollBar")
+                .style.width=
+                progress+"%";
+
+
+            pin.style.left=
+                Math.max(
+                    20,
+                    Math.min(
+                        e.offsetX,
+                        area.clientWidth-20
+                    )
+                )+"px";
+
+
+            if(progress>=100){
+
+                finishRolling();
+
+            }
+
+        }
+    );
+
+}
+
+
+function finishRolling(){
+
+    document.getElementById("miniContent")
+        .innerHTML=`
+
+        <h2>🔥 3️⃣ 오븐에 굽기</h2>
+
+        <p>
+            초록색 구간에서
+            <b>꺼내기</b>를 눌러주세요!
+        </p>
+
+        <div class="miniGame">
+
+            <div class="ovenBar">
+
+                <div class="ovenPerfect"></div>
+
+                <div
+                    class="ovenNeedle"
+                    id="ovenNeedle">
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn mainBtn"
+                onclick="takeOutOven()">
+
+                🥐 오븐에서 꺼내기
+
+            </button>
+
+            <p>
+                타이밍을 잘 맞춰주세요!
+            </p>
+
+        </div>
+
+        `;
+
+
+    let pos=0;
+
+    let direction=1;
+
+
+    const needle =
+        document.getElementById("ovenNeedle");
+
+
+    const timer =
+        setInterval(()=>{
+
+            pos+=direction*2;
+
+
+            if(pos>=100){
+
+                pos=100;
+                direction=-1;
+
+            }
+
+
+            if(pos<=0){
+
+                pos=0;
+                direction=1;
+
+            }
+
+
+            needle.style.left=
+                pos+"%";
+
+            needle.dataset.pos=pos;
+
+        },50);
+
+
+    needle.dataset.timer=
+        timer;
+
+}
+
+
+function takeOutOven(){
+
+    const needle =
+        document.getElementById("ovenNeedle");
+
+
+    const pos =
+        Number(
+            needle.dataset.pos
+        );
+
+
+    clearInterval(
+        Number(
+            needle.dataset.timer
+        )
+    );
+
+
+    let quality=0;
+
+
+    if(
+        pos>=40 &&
+        pos<=60
+    ){
+
+        quality=100;
+
+    }
+    else if(
+        pos>=25 &&
+        pos<=75
+    ){
+
+        quality=75;
+
+    }
+    else{
+
+        quality=45;
+
+    }
+
+
+    decorationGame(quality);
+
+}
+
+
+/* =====================================================
+   장식
+===================================================== */
+
+function decorationGame(quality){
+
+    document.getElementById("miniContent")
+        .innerHTML=`
+
+        <h2>🌷 4️⃣ 마지막 장식</h2>
+
+        <p>
+            손님에게 어울릴 것 같은
+            장식을 올려주세요.
+        </p>
+
+        <div class="miniGame">
+
+            <div
+                class="decorArea"
+                id="decorArea">
+
+                🥐
+
+                <div
+                    class="decorItem"
+                    style="left:15px;top:15px">
+                    🍓
+                </div>
+
+                <div
+                    class="decorItem"
+                    style="right:20px;top:20px">
+                    🌷
+                </div>
+
+                <div
+                    class="decorItem"
+                    style="left:40px;bottom:20px">
+                    🍫
+                </div>
+
+                <div
+                    class="decorItem"
+                    style="right:40px;bottom:20px">
+                    🍒
+                </div>
+
+            </div>
+
+            <br>
+
+            <button
+                class="btn green"
+                onclick="finishBread(${quality})">
+
+                🥐 완성하기
+
+            </button>
+
+        </div>
+
+        `;
+
+}
+
+
+/* =====================================================
+   빵 완성
+===================================================== */
+
+function finishBread(quality){
+
+    game.finishedBread++;
+
+    game.kindness++;
+
+
+    if(quality>=90){
+
+        game.fame+=3;
+
+    }
+    else if(quality>=70){
+
+        game.fame+=2;
+
+    }
+    else{
+
+        game.fame++;
+
+    }
+
+
+    updateUI();
+
+
+    document.getElementById("miniContent")
+        .innerHTML=`
+
+        <h2>🥐 빵 완성!</h2>
+
+        <div
+            style="
+            text-align:center;
+            font-size:70px;
+            margin:20px;">
+            🥐
+        </div>
+
+        <p style="text-align:center">
+
+            정성스럽게 만든 빵이 완성됐어요.<br>
+            이제 손님에게 직접 건네주세요.
+
+        </p>
+
+
+        <div class="modalActions">
+
+            <button
+                class="btn mainBtn"
+                onclick="serveBread()">
+
+                🥐 손님에게 건네기
+
+            </button>
+
+        </div>
+
+        `;
+
+}
+
+
+/* =====================================================
+   빵 건네기
+===================================================== */
+
+function serveBread(){
+
+    if(game.finishedBread<=0){
+
+        alert(
+            "🥐 완성된 빵이 없어요!"
+        );
+
+        return;
+
+    }
+
+
+    const customer =
+        game.currentCustomer;
+
+
+    game.finishedBread--;
+
+
+    game.money+=customer.price;
+
+    game.revenueToday+=customer.price;
+
+
+    game.kindness+=2;
+
+    game.trust++;
+
+
+    if(!game.regulars[customer.id]){
+
+        game.regulars[customer.id]=0;
+
+    }
+
+
+    game.regulars[customer.id]++;
+
+
+    const visits =
+        game.regulars[customer.id];
+
+
+    if(visits>=3){
+
+        game.money+=50;
+
+        game.revenueToday+=50;
+
+        addLog(
+            `💕 ${customer.name} 손님이 단골이 되었어요! +50G`
+        );
+
+    }
+
+
+    if(
+        customer.id==="rabbit" &&
+        Math.random()<.25
+    ){
+
+        game.warmth++;
+
+        addLog(
+            "🌷 토끼 손님이 작은 꽃을 선물했어요."
+        );
+
+    }
+
+
+    if(
+        customer.id==="squirrel" &&
+        Math.random()<.3
+    ){
+
+        game.money+=30;
+
+        game.revenueToday+=30;
+
+        addLog(
+            "🌰 다람쥐가 팁을 남겼어요. +30G"
+        );
+
+    }
+
+
+    document.getElementById("miniModal")
+        .classList.remove("show");
+
+
+    document.getElementById("customerBubble")
+        .innerHTML=
+        `💬 "${customer.order} 정말 맛있어요! 감사합니다!"`;
+
+
+    document.getElementById("customerBubble")
+        .classList.add("show");
+
+
+    document.getElementById("notice")
+        .innerHTML=
+        `💗 ${customer.name} 손님이 맛있게 먹었어요!`;
+
+
+    addLog(
+        `${customer.emoji} ${customer.name}에게 ${customer.order}을 건넸습니다. +${customer.price}G`
+    );
+
+
+    updateUI();
+
+
+    setTimeout(()=>{
+
+        document.getElementById("customerBubble")
+            .classList.remove("show");
+
+        document.getElementById("customer")
+            .className="customer";
+
+        document.getElementById("door")
+            .classList.remove("open");
+
+
+        if(
+            game.customersToday
+            < game.maxCustomers
+        ){
+
+            setTimeout(
+                nextCustomer,
+                1000
+            );
+
+        }
+        else{
+
+            document.getElementById("notice")
+                .innerHTML=
+                "☕ 오늘의 손님을 모두 맞이했어요. 이제 영업을 마쳐도 좋아요.";
+
+        }
+
+
+        saveGame();
+
+    },1800);
+
+}
+
+
+function cancelBaking(){
+
+    document.getElementById("miniModal")
+        .classList.remove("show");
+
+    addLog(
+        "🥐 빵 만들기를 잠시 멈췄어요."
+    );
+
+}
+
+
+/* =====================================================
+   영업 종료
+===================================================== */
+
+document.getElementById("closeShopBtn")
+.addEventListener(
+    "click",
+    closeShop
+);
+
+
+function closeShop(){
+
+    if(!game.shopOpen)
+        return;
+
+
+    if(game.currentCustomer){
+
+        const customer =
+            document.getElementById("customer");
+
+
+        if(
+            customer.classList.contains(
+                "atCounter"
+            )
+        ){
+
+            alert(
+                "아직 손님이 기다리고 있어요!\n" +
+                "손님에게 빵을 먼저 건네주세요."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    game.shopOpen=false;
+
+    game.phase="night";
+
+
+    document.getElementById("nightOverlay")
+        .classList.add("active");
+
+
+    document.getElementById("closeShopBtn")
+        .disabled=true;
+
+
+    addLog(
+        "🌙 영업을 마쳤습니다."
+    );
+
+
+    showSettlement();
+
+}
+
+
+/* =====================================================
+   정산
+===================================================== */
+
+function showSettlement(){
+
+    const foxSalary =
+        game.employeeFox ? 150 : 0;
+
+
+    const bearSalary =
+        game.employeeBear ? 250 : 0;
+
+
+    const employeeCost =
+        foxSalary+bearSalary;
+
+
+    const ingredientCost=50;
+
+
+    game.expenseToday=
+        employeeCost+
+        ingredientCost;
+
+
+    game.money-=
+        game.expenseToday;
+
+
+    const net=
+        game.revenueToday-
+        game.expenseToday;
+
+
+    let levelUpText="";
+
+
+    const required=
+        game.shopLevel*25;
+
+
+    if(game.fame>=required){
+
+        game.shopLevel++;
+
+
+        levelUpText=`
+
+            <div
+                style="
+                background:#fff1bd;
+                padding:12px;
+                border-radius:12px;
+                margin-top:10px;">
+
+                🏠 <b>가게 레벨 UP!</b><br>
+
+                이제 Lv.${game.shopLevel}
+                빵집이에요!
+
+            </div>
+
+        `;
+
+    }
+
+
+    document.getElementById("settlementContent")
+        .innerHTML=`
+
+        <div class="item">
+
+            🥐 빵 판매 수익
+            <b>+${game.revenueToday}G</b>
+
+        </div>
+
+        <br>
+
+        <div class="item">
+
+            🦊 여우 직원 급여
+            <b>-${foxSalary}G</b>
+
+        </div>
+
+        <br>
+
+        <div class="item">
+
+            🐻 곰 아저씨 농부 급여
+            <b>-${bearSalary}G</b>
+
+        </div>
+
+        <br>
+
+        <div class="item">
+
+            🌾 재료 관리비
+            <b>-${ingredientCost}G</b>
+
+        </div>
+
+        <br>
+
+        <h3>
+
+            오늘의 순이익:
+            ${net>=0?"+":""}${net}G
+
+        </h3>
+
+        <hr>
+
+        <p>
+
+            ⭐ 명성 ${game.fame}<br>
+            🫶 친절함 ${game.kindness}<br>
+            💗 따뜻함 ${game.warmth}<br>
+            🌿 신뢰 ${game.trust}
+
+        </p>
+
+        ${levelUpText}
+
+        `;
+
+
+    document.getElementById("settlementModal")
+        .classList.add("show");
+
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   다음 날
+===================================================== */
+
+function prepareNextDay(){
+
+    document.getElementById("settlementModal")
+        .classList.remove("show");
+
+
+    document.getElementById("nightOverlay")
+        .classList.remove("active");
+
+
+    game.day++;
+
+
+    game.phase="morning";
+
+
+    addLog(
+        `🌅 ${game.day}일차가 시작되었습니다.`
+    );
+
+
+    morning();
+
+
+    saveGame();
+
+}
+
+
+/* =====================================================
+   따뜻한 빵 나눔
+===================================================== */
+
+document.getElementById("shareBtn")
+.addEventListener(
+    "click",
+    shareBread
+);
+
+
+function shareBread(){
+
+    if(game.finishedBread<=0){
+
+        alert(
+            "🥐 나눠줄 완성된 빵이 없어요.\n" +
+            "먼저 빵을 만들어주세요!"
+        );
+
+        return;
+
+    }
+
+
+    game.finishedBread--;
+
+    game.warmth+=5;
+
+    game.kindness+=3;
+
+    game.breadShared++;
+
+
+    addLog(
+        "💗 아이들에게 따뜻한 빵을 나눠주었어요. 따뜻함 +5"
+    );
+
+
+    document.getElementById("notice")
+        .innerHTML=
+        "💗 아이들이 빵을 맛있게 먹으며 환하게 웃었어요.";
+
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   가구 데이터
+===================================================== */
+
+const furnitureData=[
+
+{
+    id:"chair",
+    name:"나무 의자",
+    emoji:"🪑",
+    price:500,
+    rarity:"⭐ 일반"
+},
+
+{
+    id:"flower",
+    name:"꽃 화분",
+    emoji:"🌷",
+    price:900,
+    rarity:"⭐ 일반"
+},
+
+{
+    id:"table",
+    name:"빈티지 티 테이블",
+    emoji:"🫖",
+    price:1800,
+    rarity:"⭐⭐ 고급"
+},
+
+{
+    id:"display",
+    name:"예쁜 빵 진열장",
+    emoji:"🧁",
+    price:2300,
+    rarity:"⭐⭐ 고급"
+},
+
+{
+    id:"candle",
+    name:"별빛 촛대",
+    emoji:"🕯️",
+    price:2800,
+    rarity:"⭐⭐⭐ 희귀"
+},
+
+{
+    id:"oven",
+    name:"별빛 오븐",
+    emoji:"🔥",
+    price:5000,
+    rarity:"⭐⭐⭐⭐ 전설"
+}
+
+];
+
+
+function refreshFurnitureShop(){
+
+    const shuffled=
+        [...furnitureData]
+        .sort(
+            ()=>Math.random()-.5
+        );
+
+
+    game.furnitureShop=
+        shuffled.slice(0,4);
+
+}
+
+
+function openFurniture(){
+
+    document.getElementById("furnitureModal")
+        .classList.add("show");
+
+
+    renderFurnitureShop();
+
+    renderSlots();
+
+}
+
+
+document.getElementById("furnitureBtn")
+.addEventListener(
+    "click",
+    openFurniture
+);
+
+
+function renderFurnitureShop(){
+
+    const area=
+        document.getElementById(
+            "furnitureList"
+        );
+
+
+    area.innerHTML="";
+
+
+    game.furnitureShop.forEach(
+        item=>{
+
+            const div=
+                document.createElement(
+                    "div"
+                );
+
+
+            div.style.cssText=`
+
+                background:white;
+                border:1px solid #dfd0b9;
+                padding:12px;
+                margin:8px 0;
+                border-radius:12px;
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+
+            `;
+
+
+            const owned=
+                game.ownedFurniture
+                .includes(item.id);
+
+
+            div.innerHTML=`
+
+                <div>
+
+                    <b>
+                        ${item.emoji}
+                        ${item.name}
+                    </b>
+
+                    <br>
+
+                    <small>
+                        ${item.rarity}
+                        ·
+                        ${item.price}G
+                    </small>
+
+                </div>
+
+
+                <button
+                    class="btn"
+                    ${owned?"disabled":""}
+                    onclick="buyFurniture('${item.id}')">
+
+                    ${owned?"보유 중":"구매"}
+
+                </button>
+
+            `;
+
+
+            area.appendChild(div);
+
+        }
+    );
+
+}
+
+
+function buyFurniture(id){
+
+    const item=
+        furnitureData.find(
+            x=>x.id===id
+        );
+
+
+    if(!item)
+        return;
+
+
+    if(
+        game.ownedFurniture
+        .includes(id)
+    ){
+
+        alert(
+            "이미 가지고 있는 가구예요."
+        );
+
+        return;
+
+    }
+
+
+    if(game.money<item.price){
+
+        alert(
+            `돈이 부족해요.\n`+
+            `필요한 돈: ${item.price}G`
+        );
+
+        return;
+
+    }
+
+
+    game.money-=item.price;
+
+    game.ownedFurniture.push(item.id);
+
+
+    addLog(
+        `${item.emoji} ${item.name}을 구매했어요.`
+    );
+
+
+    updateUI();
+
+    renderFurnitureShop();
+
+}
+
+
+/* =====================================================
+   가구 배치
+===================================================== */
+
+function renderSlots(){
+
+    const grid=
+        document.getElementById(
+            "slotGrid"
+        );
+
+
+    grid.innerHTML="";
+
+
+    for(let i=0;i<10;i++){
+
+        const slot=
+            document.createElement(
+                "div"
+            );
+
+
+        const placed=
+            game.furniture.find(
+                f=>f.slot===i
+            );
+
+
+        slot.className=
+            "slot "+
+            (placed?"occupied":"");
+
+
+        slot.textContent=
+            placed
+            ? placed.emoji
+            : "＋";
+
+
+        slot.onclick=()=>{
+
+            if(placed){
+
+                alert(
+                    `${placed.name}이 이미 놓여 있어요.`
+                );
+
+                return;
+
+            }
+
+
+            if(
+                game.ownedFurniture.length===0
+            ){
+
+                alert(
+                    "먼저 가구 상점에서 가구를 구매해주세요."
+                );
+
+                return;
+
+            }
+
+
+            const unused=
+                game.ownedFurniture.find(
+                    id=>
+                    !game.furniture.some(
+                        f=>f.id===id
+                    )
+                );
+
+
+            if(!unused){
+
+                alert(
+                    "보유한 가구는 모두 배치되어 있어요."
+                );
+
+                return;
+
+            }
+
+
+            const item=
+                furnitureData.find(
+                    x=>x.id===unused
+                );
+
+
+            game.furniture.push({
+
+                id:item.id,
+
+                name:item.name,
+
+                emoji:item.emoji,
+
+                slot:i
+
+            });
+
+
+            addLog(
+                `${item.emoji} ${item.name}을 가게에 배치했어요.`
+            );
+
+
+            saveGame();
+
+            renderSlots();
+
+        };
+
+
+        grid.appendChild(slot);
+
+    }
+
+}
+
+
+/* =====================================================
+   모달
+===================================================== */
+
+function closeModal(id){
+
+    document.getElementById(id)
+        .classList.remove("show");
+
+}
+
+
+/* =====================================================
+   🔄 새로 시작
+===================================================== */
+
+function restartGame(){
+
+    const answer=
+        confirm(
+
+            "⚠️ 현재 게임 진행 상황이 모두 초기화됩니다.\n\n"+
+            "돈, 재료, 가구, 단골, 명성, 날짜 등\n"+
+            "모든 진행 상황이 사라집니다.\n\n"+
+            "정말 처음부터 다시 시작할까요?"
+
+        );
+
+
+    if(!answer)
+        return;
+
+
+    localStorage.removeItem(
+        SAVE_KEY
+    );
+
+
+    game=
+        createNewGame();
+
+
+    document.getElementById("miniModal")
+        .classList.remove("show");
+
+
+    document.getElementById("furnitureModal")
+        .classList.remove("show");
+
+
+    document.getElementById("settlementModal")
+        .classList.remove("show");
+
+
+    document.getElementById("nightOverlay")
+        .classList.remove("active");
+
+
+    document.getElementById("door")
+        .classList.remove("open");
+
+
+    document.getElementById("customer")
+        .className="customer";
+
+
+    document.getElementById("customerBubble")
+        .classList.remove("show");
+
+
+    document.getElementById("openShopBtn")
+        .disabled=false;
+
+
+    document.getElementById("closeShopBtn")
+        .disabled=true;
+
+
+    document.getElementById("nextDayBtn")
+        .disabled=true;
+
+
+    document.getElementById("log")
+        .innerHTML="";
+
+
+    addLog(
+        "🌱 새로운 빵집 이야기가 시작되었습니다."
+    );
+
+
+    morning();
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+   게임 시작
+===================================================== */
+
+if(!game.furnitureShop ||
+   game.furnitureShop.length===0){
+
+    refreshFurnitureShop();
+
+}
+
+
+updateUI();
+
+
+/*
+    저장된 게임이 있다면
+    기존 날짜와 상태를 유지합니다.
+
+    새 게임이라면
+    1일차부터 시작합니다.
+*/
+
+if(
+    game.day===1 &&
+    game.phase==="morning" &&
+    game.customersToday===0
+){
+
+    randomWeather();
+
+}
+
+
+</script>
+
+</body>
+</html>
+```
