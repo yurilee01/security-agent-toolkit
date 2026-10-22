@@ -52,7 +52,14 @@ for p in POLICY_LOG:
             kind = "과집행"
 
         counts[kind] = counts.get(kind, 0) + 1
-        print("[어긋남]", p["rid"], p["user"], p["decision"], status, kind)
+        print(
+            "[어긋남]",
+            p["rid"],
+            p["user"],
+            p["decision"],
+            status,
+            kind
+        )
 
 for a in ACCESS_LOG:
     user = a["user"]
