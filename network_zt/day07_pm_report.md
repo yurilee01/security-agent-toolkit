@@ -14,7 +14,8 @@
 
 - (가) 내가 `web-three` 와 `web-four` 를 켠 `docker run` 명령 두 개를 붙여 넣어 주세요.
   - 쓸 내용: 윈도는 `MSYS_NO_PATHCONV=1` 부터, 맥북은 `docker run` 부터 친 그대로 두 줄
-  - 답:
+  - 답:MSYS_NO_PATHCONV=1 docker run -d --name web-three -p 8082:80 -v "$(pwd)/site-three:/usr/share/nginx/html:ro" nginx:1.28
+MSYS_NO_PATHCONV=1 docker run -d --name web-four -p 8083:80 -v "$(pwd)/site-four:/usr/share/nginx/html:ro" nginx:1.28
 
 ```
 
@@ -22,19 +23,24 @@
 
 - (나) 🔍 `docker ps` 에서 `web-three` 와 `web-four` 줄의 `PORTS` 값을 각각 적어 주세요.
   - 쓸 내용: 「web-three: … / web-four: …」
-  - 답:
+  - 답:web-three: 0.0.0.0:8082->80/tcp, [::]:8082->80/tcp
+web-four: 0.0.0.0:8083->80/tcp, [::]:8083->80/tcp
 - (다) 🔍 8082 로 세 번, 8083 으로 한 번 접속했을 때 `docker logs web-three` 와 `docker logs web-four` 의 `"GET / HTTP/1.1"` 줄은 각각 몇 개였고, 왜 그렇게 나뉘나요?
   - 쓸 내용: ① web-three 의 줄 수 ② web-four 의 줄 수 ③ 그렇게 나뉘는 이유(어느 포트로 온 요청이 어느 서버에 기록되는지)
-  - 답:
+  - 답:web-three: "GET / HTTP/1.1" 4개
+web-four: "GET / HTTP/1.1" 3개
+8082 포트로 들어온 요청은 web-three에 기록되고, 8083 포트로 들어온 요청은 web-four에 기록된다. 브라우저 접속과 새로고침 횟수에 따라 로그 개수가 달라진다.
 - (라) 🔍 `stop` 뒤에 `docker ps` 와 `docker ps -a` 에서 두 서버가 각각 어떻게 보였고, `rm` 뒤에는 어떻게 되었나요?
   - 쓸 내용: 「stop 뒤 ps: … / stop 뒤 ps -a: … / rm 뒤 ps -a: …」
-  - 답:
+  - 답:stop 뒤 ps: 두 컨테이너가 보이지 않음
+stop 뒤 ps -a: 두 컨테이너 모두 Exited (0)으로 표시됨
+rm 뒤 ps -a: 두 컨테이너가 목록에서 사라지고 기존 hello-world만 남음
 - (한 줄) 보안 담당에게 보낼 답을 한 문장으로 적어 주세요.
   - 쓸 내용: 보안 담당이 바로 읽을 수 있는 한 문장(서버를 몇 대 어떻게 켰고 기록이 어떻게 남았는지)
-  - 답:
+  - 답:서버 두 대를 각각 8082와 8083 포트로 실행했고, 각 서버의 접속 기록을 따로 확인한 뒤 두 컨테이너를 정상 종료하고 삭제했습니다.
 - 이 교시에서 새로 알게 된 것 하나를 적어 주세요.
   - 쓸 내용: 자유롭게
-  - 답:
+  - 답:Docker의 포트 연결을 다르게 설정하면 두 웹 서버를 동시에 실행할 수 있고, docker logs 명령어로 각 서버의 접속 기록을 구분해서 확인할 수 있다는 것을 배웠다.
 
 ## 6교시 · 내 이미지 만들기 (Dockerfile)
 

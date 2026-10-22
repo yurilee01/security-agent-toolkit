@@ -169,9 +169,11 @@ SESSIONS = [                                                                    
 def session_state(session):                                  # 세션 하나의 상태를 판정하는 함수
     """세션이 '유지' '재인증' '종료' 중 어느 상태인지 리턴한다"""
     limit = SESSION_LIMITS[session["resource"]]              # 이 세션의 자원에 정해진 유지 시간(분)
-    # 1. session["age"] 가 limit 보다 크면 "종료" 를 리턴한다   # ←
+   ```python
+       # 1. session["age"] 가 limit 보다 크면 "종료" 를 리턴한다
 
-    # 2. session["age"] 가 limit * 0.8 이상이면 "재인증" 을 리턴한다   # ←
+    # 2. session["age"] 가 limit * 0.8 이상이면 "재인증" 을 리턴한다
+```
 
     return "유지"                                             # 위 둘이 아니면 유지한다
 
